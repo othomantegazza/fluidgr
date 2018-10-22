@@ -1,0 +1,20 @@
+---
+title: "Introduction to Fluidigr"
+author: "Otho Mantegazza"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to Fluidigr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, echo = FALSE, message = FALSE}
+library(fluidigr)
+```
+
+
+```{r}
+read_fluidigm(path = "~/Desktop/fluidigr/prepare_data/sample-data.csv")
+```
+

@@ -13,3 +13,7 @@ Imports:
     dplyr (>= 0.7.7),
     magrittr (>= 1.5)
 RoxygenNote: 6.1.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

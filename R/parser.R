@@ -14,6 +14,8 @@
 #'
 #'   If TRUE, it returns a simplified version of the dataset
 #'   that contains only essential variables.
+#'
+#' @export
 
 read_fluidigm <- function(path,
                           simplify = TRUE,
