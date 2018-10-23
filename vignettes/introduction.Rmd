@@ -104,6 +104,22 @@ norm_dat <-
   normalize(normalizers = normalizers) 
 ```
 
+The `normalize()` function takes the data parsed by `read_fluidigm()` as object and returns the same data with two additional columns:
+
+- `norm_geom_mean` stores the geometric mean of normalizers for each sample.
+- `expression` stores the normalized expression values.
+
+Expression values are normalized with the formula: 
+
+$$expression = 2^{-(C_T - C_Tnorm)}$$
+
+Where, for each well, $C_T$ is the recorded threshold cycle (`ct_value`) and $C_Tnorm$ is the geometric mean of the normalizers C~T~ values.
 
 ## Scale
+
+```{r}
+scaled_dat <- 
+  norm_dat %>% 
+  scale_fluidigm(target_name)
+```
 

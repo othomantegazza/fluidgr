@@ -2,4 +2,5 @@
 
 export(normalize)
 export(read_fluidigm)
+export(scale_fluidigm)
 importFrom(magrittr,"%>%")

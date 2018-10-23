@@ -40,3 +40,17 @@ normalize  <- function(.data, normalizers)
     # Low expressed genes (Ct 999) to 0
     dplyr::mutate(expression = round(expression, digits = 5))
 }
+
+#' Scale Normalized Fluidigm data
+#'
+#' @export
+
+scale_fluidigm <- function(.data, .group)
+  {
+  .group <- enquo(.group)
+
+  scaled_dat <-
+    .data %>%
+    group_by(!!.group) %>%
+    mutate(scaled_expression = scale(expression))
+}
