@@ -6,6 +6,13 @@
 \usage{
 normalize(.data, normalizers)
 }
+\arguments{
+\item{.data}{A `data.frame` produced by `read_fluidigm()`. The columns required
+are: `sample_name`,`target_name` and `ct_value`.}
+
+\item{.normalizer}{A `character` vector with the names of the reference normalizers
+as they are stored in the `sample_name` column of `.data`.}
+}
 \description{
 Normalize Ct values in each sample on the geometric mean of user provided
 reference genes.

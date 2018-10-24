@@ -88,7 +88,7 @@ dat <-
   filter(sample_name != "H20")
 ```
 
-You can check that the same number of measurement are done on each sample with:
+You can check that each sample has been measured the same number of times:
 
 ```{r}
 dat$sample_name %>% table()
@@ -123,9 +123,25 @@ Where, for each well, $C_T$ is the recorded threshold cycle (`ct_value`) and $C_
 
 ## Scale
 
+Scaling is not necessary, but, together with exploratory plots, it can help you detect patterns in your data.
+
+Fluidgr provides the `scale_fluidigm()` function, that scales expression values with z-score scaling according to the groups provided in the argument `.group`.
+
+This function takes the dataset output of `normalize()` and returns the same dataset with the extra column `scaled_expression`.
+
 ```{r}
 scaled_dat <- 
   norm_dat %>% 
-  scale_fluidigm(target_name)
+  scale_fluidigm(.group = target_name)
 ```
+
+The `scale_fluidigm()` function is a soft wrapper around dplyr's `group_by()` and `mutate()`. If you want to try different scaling methods, you can repliate it's output with:
+
+```{r, eval = FALSE}
+norm_dat %>%
+  group_by(target_name) %>%
+  mutate(scaled_expression = scale(expression))
+```
+
+This should provide a good basis and enough freedom to explore and visualize your data as you prefer.
 

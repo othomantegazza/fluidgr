@@ -6,6 +6,14 @@
 \usage{
 scale_fluidigm(.data, .group)
 }
+\arguments{
+\item{.data}{A `data.frame` produced by `read_fluidigm()` and normalized by
+`normalize()`. The columns required
+are: `sample_name`,`target_name` and `expression`.}
+
+\item{.group}{A column of `.data` that you want to use to group your
+expression values before scaling.}
+}
 \description{
-Scale Normalized Fluidigm data
+Scale your fluidigm data as z-scores. Run this function after `normalize()`.
 }

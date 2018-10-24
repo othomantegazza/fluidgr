@@ -14,11 +14,19 @@ gm_mean <-  function(x, na.rm=TRUE){
 #' Normalize Ct values in each sample on the geometric mean of user provided
 #' reference genes.
 #'
+#' @param .data A `data.frame` produced by `read_fluidigm()`. The columns required
+#'     are: `sample_name`,`target_name` and `ct_value`.
+#'
+#' @param .normalizer A `character` vector with the names of the reference normalizers
+#'     as they are stored in the `sample_name` column of `.data`.
+#'
 #' @export
 
 normalize  <- function(.data, normalizers)
 {
- stopifnot(all(normalizers %in% .data$target_name))
+  stopifnot(all(normalizers %in% .data$target_name))
+  stopifnot(is.data.frame(.data))
+  stopifnot(all(c("sample_name","target_name","ct_value") %in% colnames(.data)))
 
   # The geometric mean of normalizers
   # estimates the amount of cDNA in the sample
@@ -43,9 +51,19 @@ normalize  <- function(.data, normalizers)
 
 #' Scale Normalized Fluidigm data
 #'
+#' Scale your fluidigm data as z-scores. Run this function after `normalize()`.
+#'
+#' @param .data A `data.frame` produced by `read_fluidigm()` and normalized by
+#'     `normalize()`. The columns required
+#'     are: `sample_name`,`target_name` and `expression`.
+#'
+#' @param .group A column of `.data` that you want to use to group your
+#'     expression values before scaling.
+#'
 #' @export
 
-scale_fluidigm <- function(.data, .group)
+scale_fluidigm <- function(.data,
+                           .group)
   {
   .group <- enquo(.group)
 
