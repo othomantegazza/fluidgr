@@ -95,6 +95,16 @@ dat$sample_name %>% table()
 dat$sample_name %>% table() %>% unique()
 ```
 
+Also, one of the target is a duplicated normalizer. We can remove it with:
+
+```{r}
+dat$target_name %>% unique()
+
+dat <- 
+  dat %>%
+  filter(target_name != "normalizer1bis")
+```
+
 
 ## Normalize
 
@@ -145,3 +155,6 @@ norm_dat %>%
 
 This should provide a good basis and enough freedom to explore and visualize your data as you prefer.
 
+## Visualize
+
+`Fluidi
