@@ -8,9 +8,9 @@ This package is under active development and comes with no warranty.
 
 ## Install
 
-You can install this `fluidigr` from Github with `devtools`.
+You can install `fluidigr` from Github with `devtools`.
 
-```{r}
+```r
 install.packages("devtools")
 devtools::install_github("othomantegazza/fluidigr",
                          build_vignette = TRUE)
@@ -22,6 +22,6 @@ You can read how to use this package in the package vignette.
 
 Access the vignette with:
 
-```{r}
+```r
 browseVignettes("fluidigr")
 ```
