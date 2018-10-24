@@ -2,7 +2,11 @@
 title: "Introduction to Fluidigr"
 author: "Otho Mantegazza"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  knitr:::html_vignette:
+    toc: yes
+    number_sections: true
+    highlight: default
 vignette: >
   %\VignetteIndexEntry{Introduction to Fluidigr}
   %\VignetteEncoding{UTF-8}
@@ -25,7 +29,9 @@ library(stringr)
 Record the path to your fluidigm CSV data and the name of your reference normalizers.
 
 ```{r}
-path_to_data <- "~/Desktop/fluidigr/prepare_data/sample-data-encoded.csv"
+path_to_data <- system.file("extdata", "sample-fluidigm-run.csv",
+                            package = "fluidigr",
+                            mustWork = TRUE)
 
 normalizers <- c("normalizer1",
                  "normalizer2",
