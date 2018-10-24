@@ -22,6 +22,8 @@ library(fluidigr)
 library(magrittr)
 library(dplyr)
 library(stringr)
+library(ggplot2)
+library(forcats)
 ```
 
 # Simple Workflow
@@ -51,15 +53,15 @@ fluidigm_data <-
 
 And your data are ready to be plotted in ggplot2.
 
-# Details
+In the next paragraphs you'll find this same workflow explained in details
 
-## Parse
+# Load your data into R
 
 ```{r}
 dat <- read_fluidigm(path = path_to_data)
 ```
 
-### optional - make your data tidy
+## Make your data tidy
 
 After you have parsed the data, you can modify them using [dplyr](https://dplyr.tidyverse.org/articles/dplyr.html) as you wish.
 
@@ -106,7 +108,7 @@ dat <-
 ```
 
 
-## Normalize
+# Normalize
 
 You must provided the names of the normalizers exactly as they are stored in the `target_name` column. In this case the name of the normalizers is: `normalizer1`, `normalizer2` and `normalizer3`.
 
@@ -131,9 +133,9 @@ $$expression = 2^{-(C_T - C_Tnorm)}$$
 
 Where, for each well, $C_T$ is the recorded threshold cycle (`ct_value`) and $C_Tnorm$ is the geometric mean of the normalizers C~T~ values.
 
-## Scale
+# Scale
 
-Scaling is not necessary, but, together with exploratory plots, it can help you detect patterns in your data.
+Scaling is not necessary, but, together with exploratory plots, it can help you detect patterns in your data. Indeed, the outcome of scaling will be discussed in the next section "Visualize".
 
 Fluidgr provides the `scale_fluidigm()` function, that scales expression values with z-score scaling according to the groups provided in the argument `.group`.
 
@@ -155,6 +157,75 @@ norm_dat %>%
 
 This should provide a good basis and enough freedom to explore and visualize your data as you prefer.
 
-## Visualize
+# Visualize
 
-`Fluidi
+Fluidigmr does not provide plotting function, because all the functions that you need to plot this kind of data are already available in [ggplot2](https://ggplot2.tidyverse.org/). Indeed the dataset output of is already in a [tidy/gathered format](http://r4ds.had.co.nz/tidy-data.html).
+
+Here we provide some ideas of how you can explore, plot and visualize your Fluidigm data.
+
+## What variables are in your data?
+
+Make the variables in your data explicit.
+
+Effective visualization depends from the variable that determine the effect in your dataset and eventually by the question that you are trying to anwser.
+
+For example in the sample dataset we are measuring the expression of four genes in 4 developmental stages in 5 species. 
+The column `target_name` records the "gene" variable, while the other two variables, developmental stage and species, are hidden in the `sample_name` variable. We can make them explicit. 
+
+The `sample_name` variable is encoded as "J-N1R1":
+
+- The first letter "J" is the species.
+- The letter and the number after the hyphen "N1" encode for the stage.
+- The last letter and number "R1" encode for the replicate.
+
+```{r}
+norm_dat <- 
+  norm_dat %>%
+  # make species explicit
+  mutate(species = str_split_fixed(string = sample_name,
+                                   pattern = "-",
+                                   n = 2)[, 1]) %>%
+  # make stage explicit
+  mutate(stage = str_sub(string = sample_name,
+                         start = 3,
+                         end = 4)) %>%
+  # make replicate explicit
+  mutate(replicate = str_sub(string = sample_name,
+                         start = 5,
+                         end = 6))
+```
+
+## Lineplot
+
+A lineplot can be informative directly on normalized data, without scaling.
+
+You can use facets to display multivariate data.
+
+```{r}
+norm_dat %>%
+  ggplot(aes(x = stage,
+             y = expression)) +
+  # plot each expression value into a point
+  geom_point(size = 2,
+               col = "#DA614D",
+               alpha = .8) +
+  # it might be complicated to add a line that connect means
+  # across stages,
+  # because stages are encoded as a categorical variable,
+  # we must turn them into numeric
+  stat_summary(aes(x = stage %>%
+                     as.factor(.) %>%
+                     as.numeric(.)),
+               fun.y = mean,
+               geom="line",
+               size = 1.2,
+               alpha = .7,
+               linejoin = "round") +
+  # implement facetting with independent y values
+  # for each genes, since expression values are
+  # not comparable across genes
+  facet_grid(target_name ~ species,
+               scales = "free_y") +
+  theme_bw()
+```
+
