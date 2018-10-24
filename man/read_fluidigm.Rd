@@ -4,7 +4,7 @@
 \alias{read_fluidigm}
 \title{Parse the CSV Output of Fluidigm}
 \usage{
-read_fluidigm(path, simplify = TRUE, ...)
+read_fluidigm(path, simplify = TRUE)
 }
 \arguments{
 \item{path}{The path to the CSV file}

@@ -6,10 +6,14 @@
 \usage{
 gm_mean(x, na.rm = TRUE)
 }
+\arguments{
+\item{x}{A numeric vector}
+
+\item{na.rm}{should NA be removed?
+
+source:
+https://stackoverflow.com/questions/2602583/geometric-mean-is-there-a-built-in}
+}
 \description{
 for normalizers
-}
-\details{
-source:
-https://stackoverflow.com/questions/2602583/geometric-mean-is-there-a-built-in
 }
