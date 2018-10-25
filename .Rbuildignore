@@ -1,5 +1,6 @@
+^prepare_data/*$
 ^Meta$
 ^doc$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^prepare-data/*
+
