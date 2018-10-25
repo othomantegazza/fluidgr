@@ -8,12 +8,12 @@ This package is under active development and comes with no warranty.
 
 ## Install
 
-You can install `fluidigr` from Github with `devtools`.
+You can install `fluidigr` from Github with `devtools`:
 
 ```r
 install.packages("devtools")
 devtools::install_github("othomantegazza/fluidigr",
-                         build_vignette = TRUE)
+                         build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
 ## Use
