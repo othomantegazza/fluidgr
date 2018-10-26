@@ -201,8 +201,8 @@ A lineplot can be informative directly on normalized data, without scaling.
 
 You can use facets to display multivariate data.
 
-```{r}
-norm_dat %>%
+```{r, fig.height=7}
+p <- norm_dat %>%
   ggplot(aes(x = stage,
              y = expression)) +
   # plot each expression value into a point
@@ -226,6 +226,84 @@ norm_dat %>%
   # not comparable across genes
   facet_grid(target_name ~ species,
                scales = "free_y") +
-  theme_bw()
+  theme_bw() 
+
+p %>% print()
 ```
 
+Some patterns in your data might be more evident if you plot them in log  scale.
+
+```{r, warning=FALSE}
+p_log <- 
+  p + scale_y_log10()
+
+p_log %>% print()
+```
+
+Also using heatmap with ggplot2
+
+```{r, fig.height=2}
+p_heat <- 
+  norm_dat %>%
+  ggplot(aes(x = stage,
+             y = target_name,
+             fill = expression)) +
+  geom_tile() +
+  facet_grid(. ~ species) +
+  scale_fill_viridis_c()
+
+p_heat %>% print()
+```
+
+Sometime heatmap don't convey muich invormation if you don't scale your data.
+
+For example we can scale every gene on z-score to make them comparable.
+
+```{r}
+scaled_gene <- 
+  norm_dat %>% 
+  scale_fluidigm(.group = target_name)
+```
+
+Check if the heatmap has improved
+
+**remeber to map the colours to the new `scaled_expression` values**
+
+```{r}
+p_heat <- 
+  scaled_gene %>%
+  ggplot(aes(x = stage,
+             y = species,
+             fill = scaled_expression)) +
+  geom_tile() +
+  facet_grid(. ~ target_name) +
+  scale_fill_viridis_c()
+
+p_heat %>% print()
+```
+
+We can try to set more groups.
+
+```{r}
+scaled_dat <- 
+  norm_dat %>%
+  group_by(target_name, species) %>%
+  mutate(scaled_expression = scale(expression))
+```
+
+Check if the heatmap has improved
+
+**remeber to map the colours to the new `scaled_expression` values**
+
+```{r,  fig.height=2}
+p_heat <- 
+  scaled_dat %>%
+  ggplot(aes(x = stage,
+             y = species,
+             fill = scaled_expression)) +
+  geom_tile() +
+  facet_grid(. ~ target_name) +
+  scale_fill_viridis_c()
+
+p_heat %>% print()
+```
