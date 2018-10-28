@@ -24,6 +24,7 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 library(forcats)
+library(scales)
 ```
 
 # Simple Workflow
@@ -262,7 +263,9 @@ For example we can scale every gene on z-score to make them comparable.
 ```{r}
 scaled_gene <- 
   norm_dat %>% 
-  scale_fluidigm(.group = target_name)
+  group_by(target_name) %>%
+  mutate(scaled_expression = expression %>%
+           rescale(from = range(.), to = c(0,1)))
 ```
 
 Check if the heatmap has improved
@@ -288,7 +291,8 @@ We can try to set more groups.
 scaled_dat <- 
   norm_dat %>%
   group_by(target_name, species) %>%
-  mutate(scaled_expression = scale(expression))
+  mutate(scaled_expression = expression %>%
+           rescale(from = range(.), to = c(0,1)))
 ```
 
 Check if the heatmap has improved
