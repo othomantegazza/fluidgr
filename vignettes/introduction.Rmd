@@ -202,7 +202,7 @@ A lineplot can be informative directly on normalized data, without scaling.
 
 You can use facets to display multivariate data.
 
-```{r, fig.height=7}
+```{r, fig.height=6}
 p <- norm_dat %>%
   ggplot(aes(x = stage,
              y = expression)) +
@@ -234,7 +234,7 @@ p %>% print()
 
 Some patterns in your data might be more evident if you plot them in log  scale.
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, fig.height=6}
 p_log <- 
   p + scale_y_log10()
 
@@ -272,7 +272,7 @@ Check if the heatmap has improved
 
 **remeber to map the colours to the new `scaled_expression` values**
 
-```{r}
+```{r, fig.height=2}
 p_heat <- 
   scaled_gene %>%
   ggplot(aes(x = stage,
@@ -310,4 +310,10 @@ p_heat <-
   scale_fill_viridis_c()
 
 p_heat %>% print()
+```
+
+# Session Info
+
+```{r}
+devtools::session_info()
 ```
