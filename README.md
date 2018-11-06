@@ -8,11 +8,11 @@ This package is under active development and comes with no warranty.
 
 ## Install
 
-You can install `fluidigr` from Github with `devtools`:
+You can install `fluidgr` from Github with `devtools`:
 
 ```r
 install.packages("devtools")
-devtools::install_github("othomantegazza/fluidigr",
+devtools::install_github("othomantegazza/fluidgr",
                          build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
@@ -23,5 +23,5 @@ You can read how to use this package in the package vignette.
 Access the vignette with:
 
 ```r
-browseVignettes("fluidigr")
+browseVignettes("fluidgr")
 ```

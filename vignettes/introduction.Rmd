@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Fluidigr"
+title: "Introduction to Fluidgr"
 author: "Otho Mantegazza"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
     number_sections: true
     highlight: default
 vignette: >
-  %\VignetteIndexEntry{Introduction to Fluidigr}
+  %\VignetteIndexEntry{Introduction to Fluidgr}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -18,7 +18,7 @@ editor_options:
 # Setup
 
 ```{r setup, message = FALSE}
-library(fluidigr)
+library(fluidgr)
 library(magrittr)
 library(dplyr)
 library(stringr)
@@ -33,7 +33,7 @@ Record the path to your fluidigm CSV data and the name of your reference normali
 
 ```{r}
 path_to_data <- system.file("extdata", "sample-fluidigm-run.csv",
-                            package = "fluidigr",
+                            package = "fluidgr",
                             mustWork = TRUE)
 
 normalizers <- c("normalizer1",
