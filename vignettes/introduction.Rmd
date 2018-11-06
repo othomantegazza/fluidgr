@@ -25,6 +25,7 @@ library(stringr)
 library(ggplot2)
 library(forcats)
 library(scales)
+library(devtools)
 ```
 
 # Simple Workflow
