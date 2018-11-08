@@ -20,8 +20,11 @@ devtools::install_github("othomantegazza/fluidgr",
 
 You can read how to use this package in the package vignette.
 
-Access the vignette with:
+Access here **online** the [full documentation](https://othomantegazza.github.io/fluidgr/) and the [package vignette](https://othomantegazza.github.io/fluidgr/articles/introduction.html) 
+
+Otherwise read the documentation locally with:
 
 ```r
 browseVignettes("fluidgr")
 ```
+
