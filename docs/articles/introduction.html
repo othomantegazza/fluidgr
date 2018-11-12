@@ -141,9 +141,9 @@ normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
 ##   tm_peakratio = col_integer(),
 ##   comments = col_character()
 ## )</code></pre>
-<div id="make-your-data-tidy" class="section level2">
+<div id="tidy-your-data" class="section level2">
 <h2 class="hasAnchor">
-<a href="#make-your-data-tidy" class="anchor"></a>Make your data tidy</h2>
+<a href="#tidy-your-data" class="anchor"></a>Tidy your Data</h2>
 <p>After you have parsed the data, you can modify them as you wish using <a href="https://dplyr.tidyverse.org/articles/dplyr.html">dplyr</a>.</p>
 <div id="remove-samples" class="section level3">
 <h3 class="hasAnchor">
@@ -228,7 +228,6 @@ normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
 norm_dat &lt;-<span class="st"> </span>
 <span class="st">  </span>dat <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/normalize.html">normalize</a></span>(<span class="dt">normalizers =</span> normalizers) </code></pre></div>
-<pre><code>## Joining, by = "sample_name"</code></pre>
 <p>The <code><a href="../reference/normalize.html">normalize()</a></code> function takes the data parsed by <code><a href="../reference/read_fluidigm.html">read_fluidigm()</a></code> as object and returns the same data with two additional columns:</p>
 <ul>
 <li>
@@ -487,7 +486,7 @@ p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">p
       <li><a href="#simple-workflow">Simple Workflow</a></li>
       <li>
 <a href="#load-your-data-into-r">Load your data into R</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#make-your-data-tidy">Make your data tidy</a></li>
+<li><a href="#tidy-your-data">Tidy your Data</a></li>
       </ul>
 </li>
       <li><a href="#normalize">Normalize</a></li>

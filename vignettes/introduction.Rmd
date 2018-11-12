@@ -76,7 +76,7 @@ And load it with the funciton `read_fluidigm()`.
 dat <- read_fluidigm(path = path_to_data)
 ```
 
-## Make your data tidy
+## Tidy your Data
 
 After you have parsed the data, you can modify them as you wish using [dplyr](https://dplyr.tidyverse.org/articles/dplyr.html).
 

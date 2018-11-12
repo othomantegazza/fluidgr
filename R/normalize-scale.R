@@ -48,7 +48,7 @@ normalize <- function(.data, normalizers)
   norm_data <-
     .data %>%
     dplyr::filter(!.data$target_name %in% normalizers) %>%
-    dplyr::left_join(norms) %>%
+    dplyr::left_join(norms, by = "sample_name") %>%
     dplyr::mutate(expression = 2^(-(.data$ct_value - .data$norm_geom_mean))) %>%
     # Low expressed genes (Ct 999) to 0
     dplyr::mutate(expression = round(.data$expression, digits = 5))
