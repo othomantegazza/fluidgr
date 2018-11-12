@@ -72,7 +72,7 @@
       <h1>Introduction to Fluidgr</h1>
                         <h4 class="author">Otho Mantegazza</h4>
             
-            <h4 class="date">2018-11-06</h4>
+            <h4 class="date">2018-11-12</h4>
       
       
       <div class="hidden name"><code>introduction.Rmd</code></div>
@@ -110,12 +110,18 @@ normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
 <span class="st">  </span><span class="kw"><a href="../reference/read_fluidigm.html">read_fluidigm</a></span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/normalize.html">normalize</a></span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="../reference/scale_fluidigm.html">scale_fluidigm</a></span>()</code></pre></div>
-<p>And your data are ready to be plotted in ggplot2.</p>
-<p>In the next paragraphs you’ll find this same workflow explained in details</p>
+<p>And your data are ready to be saved on disk or plotted with ggplot2.</p>
+<p>In the next paragraphs you’ll find this same workflow explained in details.</p>
 </div>
 <div id="load-your-data-into-r" class="section level1">
 <h1 class="hasAnchor">
 <a href="#load-your-data-into-r" class="anchor"></a>Load your data into R</h1>
+<p>You can start by loading the output of the Fluidigm digital real time machine into R. This output is in a standard CSV format with a 10 lines header and triple column names, you can find <a href="https://github.com/othomantegazza/fluidgr/blob/master/inst/extdata/sample-fluidigm-run.csv">an example of such file here</a>.</p>
+<p>Access the path to that sample CSV file in R with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path_to_data &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"sample-fluidigm-run.csv"</span>,
+                            <span class="dt">package =</span> <span class="st">"fluidgr"</span>,
+                            <span class="dt">mustWork =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>And load it with the funciton <code><a href="../reference/read_fluidigm.html">read_fluidigm()</a></code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_fluidigm.html">read_fluidigm</a></span>(<span class="dt">path =</span> path_to_data)</code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
@@ -138,8 +144,11 @@ normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
 <div id="make-your-data-tidy" class="section level2">
 <h2 class="hasAnchor">
 <a href="#make-your-data-tidy" class="anchor"></a>Make your data tidy</h2>
-<p>After you have parsed the data, you can modify them using <a href="https://dplyr.tidyverse.org/articles/dplyr.html">dplyr</a> as you wish.</p>
-<p>Example, remove samples:</p>
+<p>After you have parsed the data, you can modify them as you wish using <a href="https://dplyr.tidyverse.org/articles/dplyr.html">dplyr</a>.</p>
+<div id="remove-samples" class="section level3">
+<h3 class="hasAnchor">
+<a href="#remove-samples" class="anchor"></a>Remove samples</h3>
+<p>For example, you might want to remove selected samples:</p>
 <p>Our example dataset contains samples that are dilution used for calibration curves.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat<span class="op">$</span>sample_name <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unique</span>()</code></pre></div>
 <pre><code>##  [1] "H20"           "J-N2R3"        "R- Mix 1/160"  "J-N2R2"       
@@ -173,6 +182,10 @@ normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span>
 <span class="st">  </span>dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(sample_name <span class="op">!=</span><span class="st"> "H20"</span>)</code></pre></div>
+</div>
+<div id="check-measurements-per-sample" class="section level3">
+<h3 class="hasAnchor">
+<a href="#check-measurements-per-sample" class="anchor"></a>Check measurements per sample</h3>
 <p>You can check that each sample has been measured the same number of times:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat<span class="op">$</span>sample_name <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">table</span>()</code></pre></div>
 <pre><code>## .
@@ -190,7 +203,11 @@ normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
 ##      8      8      8      8      8      8      8      8      8      8</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat<span class="op">$</span>sample_name <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">table</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unique</span>()</code></pre></div>
 <pre><code>## [1] 8</code></pre>
-<p>Also, one of the target is a duplicated normalizer. We can remove it with:</p>
+</div>
+<div id="check-for-duplicated-targets" class="section level3">
+<h3 class="hasAnchor">
+<a href="#check-for-duplicated-targets" class="anchor"></a>Check for duplicated targets</h3>
+<p>Also, one of the target is a duplicated normalizer. You can remove it with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat<span class="op">$</span>target_name <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unique</span>()</code></pre></div>
 <pre><code>## [1] "normalizer1"    "gene1"          "gene4"          "gene2"         
 ## [5] "normalizer2"    "normalizer3"    "normalizer1bis" "gene3"</code></pre>
@@ -199,10 +216,11 @@ normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class=
 <span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(target_name <span class="op">!=</span><span class="st"> "normalizer1bis"</span>)</code></pre></div>
 </div>
 </div>
+</div>
 <div id="normalize" class="section level1">
 <h1 class="hasAnchor">
 <a href="#normalize" class="anchor"></a>Normalize</h1>
-<p>You must provided the names of the normalizers exactly as they are stored in the <code>target_name</code> column. In this case the name of the normalizers is: <code>normalizer1</code>, <code>normalizer2</code> and <code>normalizer3</code>.</p>
+<p>You must provide the names of the normalizers exactly as they are stored in the <code>target_name</code> column. In this case the name of the normalizers is: <code>normalizer1</code>, <code>normalizer2</code> and <code>normalizer3</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">normalizers &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"normalizer1"</span>,
                  <span class="st">"normalizer2"</span>,
                  <span class="st">"normalizer3"</span>)
@@ -221,21 +239,31 @@ norm_dat &lt;-<span class="st"> </span>
 <p>Expression values are normalized with the formula:</p>
 <p><span class="math display">\[expression = 2^{-(C_T - C_Tnorm)}\]</span></p>
 <p>Where, for each well, <span class="math inline">\(C_T\)</span> is the recorded threshold cycle (<code>ct_value</code>) and <span class="math inline">\(C_Tnorm\)</span> is the geometric mean of the normalizers C<sub>T</sub> values.</p>
+<p>This formula is a simplification of the common <span class="math inline">\(2^{ - \Delta \Delta Ct}\)</span> formula that skips calibration.</p>
 </div>
 <div id="scale" class="section level1">
 <h1 class="hasAnchor">
 <a href="#scale" class="anchor"></a>Scale</h1>
-<p>Scaling is not necessary, but, together with exploratory plots, it can help you detect patterns in your data. Indeed, the outcome of scaling will be discussed in the next section “Visualize”.</p>
-<p>Fluidgr provides the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function, that scales expression values with z-score scaling according to the groups provided in the argument <code>.group</code>.</p>
+<p>Scaling is not necessary, and you can communicate and visualize directly the normalized expression values; stored in the <code>expression</code> column of the <code>norm_dat</code> dataset.</p>
+<p>Indeed scaling is not necessary, but, together with exploratory plots, scaling can help you detect patterns in your data. You can understand better the outcome of scaling when you visualize tour data in plots. This is why you can learn about the effects of scaling also in the next section “Visualize”.</p>
+<div id="scale-with-the-scale_fluidigm-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#scale-with-the-scale_fluidigm-function" class="anchor"></a>Scale with the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function</h3>
+<p>Fluidgr provides the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function, that scales expression values by z-score according to the groups provided in the argument <code>.group</code>.</p>
 <p>This function takes the dataset output of <code><a href="../reference/normalize.html">normalize()</a></code> and returns the same dataset with the extra column <code>scaled_expression</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaled_dat &lt;-<span class="st"> </span>
 <span class="st">  </span>norm_dat <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/scale_fluidigm.html">scale_fluidigm</a></span>(<span class="dt">.group =</span> target_name)</code></pre></div>
-<p>The <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function is a soft wrapper around dplyr’s <code><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> and <code><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>. If you want to try different scaling methods, you can repliate it’s output with:</p>
+</div>
+<div id="write-your-own-scaling-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#write-your-own-scaling-function" class="anchor"></a>Write your own scaling function</h3>
+<p>You can write your own scaling function, becaus <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function is just a soft wrapper around dplyr’s <code><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> and <code><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>. If you want to try different scaling methods, you can replicate and tweak the output of <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">norm_dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(target_name) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">scaled_expression =</span> <span class="kw">scale</span>(expression))</code></pre></div>
-<p>This should provide a good basis and enough freedom to explore and visualize your data as you prefer.</p>
+<p>This should provide to you a good basis and enough freedom to explore and visualize your data as you prefer.</p>
+</div>
 </div>
 <div id="visualize" class="section level1">
 <h1 class="hasAnchor">
@@ -301,13 +329,13 @@ norm_dat &lt;-<span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() 
 
 p <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <p>Some patterns in your data might be more evident if you plot them in log scale.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_log &lt;-<span class="st"> </span>
 <span class="st">  </span>p <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_log10</a></span>()
 
 p_log <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 <p>Also using heatmap with ggplot2</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_heat &lt;-<span class="st"> </span>
 <span class="st">  </span>norm_dat <span class="op">%&gt;%</span>
@@ -319,7 +347,7 @@ p_log <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pr
 <span class="st">  </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span>()
 
 p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 <p>Sometime heatmap don’t convey muich invormation if you don’t scale your data.</p>
 <p>For example we can scale every gene on z-score to make them comparable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaled_gene &lt;-<span class="st"> </span>
@@ -339,7 +367,7 @@ p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">p
 <span class="st">  </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span>()
 
 p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
 <p>We can try to set more groups.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaled_dat &lt;-<span class="st"> </span>
 <span class="st">  </span>norm_dat <span class="op">%&gt;%</span>
@@ -358,13 +386,13 @@ p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">p
 <span class="st">  </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span>()
 
 p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
 </div>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">session_info</a></span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">session_info</a></span>()</code></pre></div>
 <pre><code>## ─ Session info ──────────────────────────────────────────────────────────
 ##  setting  value                       
 ##  version  R version 3.4.4 (2018-03-15)
@@ -375,7 +403,7 @@ p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">p
 ##  collate  en_US.UTF-8                 
 ##  ctype    en_US.UTF-8                 
 ##  tz       Europe/Paris                
-##  date     2018-11-06                  
+##  date     2018-11-12                  
 ## 
 ## ─ Packages ──────────────────────────────────────────────────────────────
 ##  package     * version    date       lib source        
@@ -395,7 +423,7 @@ p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">p
 ##  digest        0.6.18     2018-10-10 [1] CRAN (R 3.4.4)
 ##  dplyr       * 0.7.7      2018-10-16 [1] CRAN (R 3.4.4)
 ##  evaluate      0.12       2018-10-09 [1] CRAN (R 3.4.4)
-##  fluidgr     * 0.0.0.9001 2018-11-06 [1] local         
+##  fluidgr     * 0.0.0.9001 2018-11-12 [1] local         
 ##  forcats     * 0.3.0      2018-02-19 [1] CRAN (R 3.4.4)
 ##  fs            1.2.6      2018-08-23 [1] CRAN (R 3.4.4)
 ##  ggplot2     * 3.0.0      2018-07-03 [1] CRAN (R 3.4.4)

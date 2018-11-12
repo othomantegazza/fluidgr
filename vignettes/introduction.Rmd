@@ -53,11 +53,24 @@ fluidigm_data <-
   scale_fluidigm()
 ```
 
-And your data are ready to be plotted in ggplot2.
+And your data are ready to be saved on disk or plotted with ggplot2.
 
-In the next paragraphs you'll find this same workflow explained in details
+In the next paragraphs you'll find this same workflow explained in details.
 
 # Load your data into R
+
+You can start by loading the output of the Fluidigm digital real time machine into R.
+This output is in a standard CSV format with a 10 lines header and triple column names, you can find [an example of such file here](https://github.com/othomantegazza/fluidgr/blob/master/inst/extdata/sample-fluidigm-run.csv).
+
+Access the path to that sample CSV file in R with:
+
+```{r}
+path_to_data <- system.file("extdata", "sample-fluidigm-run.csv",
+                            package = "fluidgr",
+                            mustWork = TRUE)
+```
+
+And load it with the funciton `read_fluidigm()`.
 
 ```{r}
 dat <- read_fluidigm(path = path_to_data)
@@ -65,10 +78,11 @@ dat <- read_fluidigm(path = path_to_data)
 
 ## Make your data tidy
 
-After you have parsed the data, you can modify them using [dplyr](https://dplyr.tidyverse.org/articles/dplyr.html) as you wish.
+After you have parsed the data, you can modify them as you wish using [dplyr](https://dplyr.tidyverse.org/articles/dplyr.html).
 
+### Remove samples
 
-Example, remove samples:
+For example, you might want to remove selected samples:
 
 Our example dataset contains samples that are dilution used for calibration curves.
 
@@ -92,6 +106,8 @@ dat <-
   filter(sample_name != "H20")
 ```
 
+### Check measurements per sample
+
 You can check that each sample has been measured the same number of times:
 
 ```{r}
@@ -99,7 +115,9 @@ dat$sample_name %>% table()
 dat$sample_name %>% table() %>% unique()
 ```
 
-Also, one of the target is a duplicated normalizer. We can remove it with:
+### Check for duplicated targets
+
+Also, one of the target is a duplicated normalizer. You can remove it with:
 
 ```{r}
 dat$target_name %>% unique()
@@ -112,7 +130,7 @@ dat <-
 
 # Normalize
 
-You must provided the names of the normalizers exactly as they are stored in the `target_name` column. In this case the name of the normalizers is: `normalizer1`, `normalizer2` and `normalizer3`.
+You must provide the names of the normalizers exactly as they are stored in the `target_name` column. In this case the name of the normalizers is: `normalizer1`, `normalizer2` and `normalizer3`.
 
 ```{r}
 normalizers <- c("normalizer1",
@@ -135,11 +153,17 @@ $$expression = 2^{-(C_T - C_Tnorm)}$$
 
 Where, for each well, $C_T$ is the recorded threshold cycle (`ct_value`) and $C_Tnorm$ is the geometric mean of the normalizers C~T~ values.
 
+This formula is a simplification of the common $2^{ - \Delta \Delta Ct}$ formula that skips calibration.
+
 # Scale
 
-Scaling is not necessary, but, together with exploratory plots, it can help you detect patterns in your data. Indeed, the outcome of scaling will be discussed in the next section "Visualize".
+Scaling is not necessary, and you can communicate and visualize directly the normalized expression values; stored in the `expression` column of the `norm_dat` dataset.
 
-Fluidgr provides the `scale_fluidigm()` function, that scales expression values with z-score scaling according to the groups provided in the argument `.group`.
+Indeed scaling is not necessary, but, together with exploratory plots, scaling can help you detect patterns in your data. You can understand better the outcome of scaling when you visualize tour data in plots. This is why you can learn about the effects of scaling also in the next section "Visualize".
+
+### Scale with the `scale_fluidigm()` function
+
+Fluidgr provides the `scale_fluidigm()` function, that scales expression values by z-score according to the groups provided in the argument `.group`.
 
 This function takes the dataset output of `normalize()` and returns the same dataset with the extra column `scaled_expression`.
 
@@ -149,7 +173,10 @@ scaled_dat <-
   scale_fluidigm(.group = target_name)
 ```
 
-The `scale_fluidigm()` function is a soft wrapper around dplyr's `group_by()` and `mutate()`. If you want to try different scaling methods, you can repliate it's output with:
+
+### Write your own scaling function
+
+You can write your own scaling function, becaus `scale_fluidigm()` function is just a soft wrapper around dplyr's `group_by()` and `mutate()`. If you want to try different scaling methods, you can replicate and tweak the output of `scale_fluidigm()` with:
 
 ```{r, eval = FALSE}
 norm_dat %>%
@@ -157,7 +184,7 @@ norm_dat %>%
   mutate(scaled_expression = scale(expression))
 ```
 
-This should provide a good basis and enough freedom to explore and visualize your data as you prefer.
+This should provide to you a good basis and enough freedom to explore and visualize your data as you prefer.
 
 # Visualize
 
@@ -316,5 +343,5 @@ p_heat %>% print()
 # Session Info
 
 ```{r}
-devtools::session_info()
+session_info()
 ```
