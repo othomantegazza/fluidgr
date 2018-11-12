@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fluidgr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.0.9001</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1</span>
       </span>
     </div>
 
@@ -55,6 +55,9 @@
       <a href="articles/introduction.html">Introduction to Fluidgr</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -82,15 +85,31 @@
 <a href="#install" class="anchor"></a>Install</h2>
 <p>You can install <code>fluidgr</code> from Github with <code>devtools</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"devtools"</span>)
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"othomantegazza/fluidgr"</span>,
-                         <span class="dt">build_opts =</span> <span class="kw">c</span>(<span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span>))</code></pre></div>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"othomantegazza/fluidgr"</span>)</code></pre></div>
 </div>
 <div id="use" class="section level2">
 <h2 class="hasAnchor">
 <a href="#use" class="anchor"></a>Use</h2>
 <p>You can read how to use this package in the package vignette.</p>
-<p>Access the vignette with:</p>
+<div id="online-documentation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#online-documentation" class="anchor"></a>Online Documentation</h3>
+<p>Access here <strong>online</strong> the <a href="https://othomantegazza.github.io/fluidgr/">full documentation</a> and the <a href="https://othomantegazza.github.io/fluidgr/articles/introduction.html">package vignette</a></p>
+</div>
+<div id="local" class="section level3">
+<h3 class="hasAnchor">
+<a href="#local" class="anchor"></a>Local</h3>
+<p>To read the documentation locally you need to:</p>
+<ul>
+<li>Install all the dependencies stated in the <code>Suggests</code> field of the file <a href="DESCRIPTION" class="uri">DESCRIPTION</a>.</li>
+<li>Install this package specifying the option <code>build_opts = c("--no-resave-data", "--no-manual")</code>
+</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"othomantegazza/fluidgr"</span>,
+                         <span class="dt">build_opts =</span> <span class="kw">c</span>(<span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span>))</code></pre></div>
+<p>Then you can access the documentation with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browseVignettes</span>(<span class="st">"fluidgr"</span>)</code></pre></div>
+</div>
 </div>
 </div>
   </div>

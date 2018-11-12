@@ -1,7 +1,7 @@
 Package: fluidgr
 Type: Package
 Title: Analize Fluidigm qPCR Data
-Version: 0.0.0.9001
+Version: 0.0.1
 Authors@R: person("Otho", "Mantegazza", email = "otho.mantegazza@gmail.com",
 				          role = c("aut", "cre"))
 Description: Parse, normalize, scale and plot data from Fluidigm qPCR.
@@ -12,13 +12,14 @@ Imports:
     readr (>= 1.1.1),
     dplyr (>= 0.7.7),
     magrittr (>= 1.5),
+    rlang (>= 0.3.0)
+RoxygenNote: 6.1.0
+Suggests: 
+    knitr (>= 1.20),
+    rmarkdown (>= 1.10),
+    devtools (>= 2.0.0),
     stringr (>= 1.3.1),
     ggplot2 (>= 3.0.0),
     forcats (>= 0.3.0),
-    rlang (>= 0.3.0),
     scales (>= 1.0.0)
-RoxygenNote: 6.1.0
-Suggests: 
-    knitr,
-    rmarkdown
 VignetteBuilder: knitr
