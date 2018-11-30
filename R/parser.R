@@ -37,19 +37,6 @@ read_fluidigm <- function(path,
                     .data$target_type,
                     .data$ct_value)
   }
-  # %>%
-  #   select(sampleName, GeneName,
-  #          LOC_Name, Value, Type__1) %>%
-  #   dplyr::rename(sample_name = sampleName,
-  #                 target_name = GeneName,
-  #                 locus_id = LOC_Name,
-  #                 ct_value = Value,
-  #                 type = Type__1) %>%
-  #   mutate(ct_value = as.numeric(ct_value)) %>%
-  #   # remove standard curves
-  #   filter(sample_name != "H20",
-  #          !grepl("Mix", sample_name))
-  # out
 }
 
-# dat <- read_fluidigm("prepare_data/data9696 puce1.csv")
+
