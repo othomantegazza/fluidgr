@@ -24,10 +24,6 @@ library(fluidgr)
 library(magrittr)
 library(dplyr)
 library(stringr)
-library(ggplot2)
-library(forcats)
-library(scales)
-library(devtools)
 ```
 
 # Simple Workflow
@@ -177,5 +173,5 @@ norm_dat %>% head() %>% knitr::kable()
 # Session Info
 
 ```{r}
-session_info()
+devtools::session_info()
 ```
