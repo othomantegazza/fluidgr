@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Fluidgr"
+title: "Scale and Visualize qPCR results"
 author: "Otho Mantegazza"
 date: "`r Sys.Date()`"
 output:
@@ -8,152 +8,18 @@ output:
     number_sections: true
     highlight: default
 vignette: >
-  %\VignetteIndexEntry{Introduction to Fluidgr}
+  %\VignetteIndexEntry{Scale and Visualize qPCR results}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
 ---
-
-# Setup
-
-```{r setup, message = FALSE}
-library(fluidgr)
-library(magrittr)
-library(dplyr)
-library(stringr)
-library(ggplot2)
-library(forcats)
-library(scales)
-library(devtools)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
-
-# Simple Workflow
-
-Record the path to your fluidigm CSV data and the name of your reference normalizers.
-
-```{r}
-path_to_data <- system.file("extdata", "sample-fluidigm-run.csv",
-                            package = "fluidgr",
-                            mustWork = TRUE)
-
-normalizers <- c("normalizer1",
-                 "normalizer2",
-                 "normalizer3")
-```
-
-
-Parse them, normalize them and scale them in a [magrittr](https://magrittr.tidyverse.org/index.html) pipe.
-
-```{r, eval=FALSE}
-fluidigm_data <- 
-  path_to_data %>%
-  read_fluidigm() %>%
-  normalize() %>%
-  scale_fluidigm()
-```
-
-And your data are ready to be saved on disk or plotted with ggplot2.
-
-In the next paragraphs you'll find this same workflow explained in details.
-
-# Load your data into R
-
-You can start by loading the output of the Fluidigm digital real time machine into R.
-This output is in a standard CSV format with a 10 lines header and triple column names, you can find [an example of such file here](https://github.com/othomantegazza/fluidgr/blob/master/inst/extdata/sample-fluidigm-run.csv).
-
-Access the path to that sample CSV file in R with:
-
-```{r}
-path_to_data <- system.file("extdata", "sample-fluidigm-run.csv",
-                            package = "fluidgr",
-                            mustWork = TRUE)
-```
-
-And load it with the funciton `read_fluidigm()`.
-
-```{r}
-dat <- read_fluidigm(path = path_to_data)
-```
-
-## Tidy your Data
-
-After you have parsed the data, you can modify them as you wish using [dplyr](https://dplyr.tidyverse.org/articles/dplyr.html).
-
-### Remove samples
-
-For example, you might want to remove selected samples:
-
-Our example dataset contains samples that are dilution used for calibration curves.
-
-```{r}
-dat$sample_name %>% unique()
-```
-
-Those samples, all have the word "Mix" in their name, and can be removed with:
-
-```{r}
-dat <- 
-  dat %>%
-  filter(!sample_name %>% str_detect("Mix"))
-```
-
-One sample "H2O" is a negative control, it also can be removed:
-
-```{r}
-dat <- 
-  dat %>%
-  filter(sample_name != "H20")
-```
-
-### Check measurements per sample
-
-You can check that each sample has been measured the same number of times:
-
-```{r}
-dat$sample_name %>% table()
-dat$sample_name %>% table() %>% unique()
-```
-
-### Check for duplicated targets
-
-Also, one of the target is a duplicated normalizer. You can remove it with:
-
-```{r}
-dat$target_name %>% unique()
-
-dat <- 
-  dat %>%
-  filter(target_name != "normalizer1bis")
-```
-
-
-# Normalize
-
-You must provide the names of the normalizers exactly as they are stored in the `target_name` column. In this case the name of the normalizers is: `normalizer1`, `normalizer2` and `normalizer3`.
-
-```{r}
-normalizers <- c("normalizer1",
-                 "normalizer2",
-                 "normalizer3")
-
-norm_dat <- 
-  dat %>% 
-  normalize(normalizers = normalizers) 
-```
-
-The `normalize()` function takes the data parsed by `read_fluidigm()` as object and returns the same data with two additional columns:
-
-- `norm_geom_mean` stores the geometric mean of normalizers for each sample.
-- `expression` stores the normalized expression values.
-
-Expression values are normalized with the formula: 
-
-$$expression = 2^{-(C_T - C_Tnorm)}$$
-
-Where, for each well, $C_T$ is the recorded threshold cycle (`ct_value`) and $C_Tnorm$ is the geometric mean of the normalizers C~T~ values.
-
-This formula is a simplification of the common $2^{ - \Delta \Delta Ct}$ formula that skips calibration.
 
 # Scale
 
@@ -338,10 +204,4 @@ p_heat <-
   scale_fill_viridis_c()
 
 p_heat %>% print()
-```
-
-# Session Info
-
-```{r}
-session_info()
 ```
