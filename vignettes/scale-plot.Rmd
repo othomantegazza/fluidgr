@@ -26,7 +26,7 @@ Here, you will learn how to scale, inspect and visualize the gene expression dat
 # Setup
 
 
-```{r setup, message = FALSE}
+```{r packages, message = FALSE}
 library(fluidgr)
 library(magrittr)
 library(dplyr)
@@ -288,3 +288,4 @@ centered_dat %>%
              nrow = 1) +
   theme_bw() 
 ```
+
