@@ -1,10 +1,6 @@
-# An R Package to Analyze Fluidigm qPCR Data
+# An R Package to Analyze Fluidigm qPCR Data for Gene Expression
 
 This R package loads, normalizes, scales and visualizes Fluidigm qPCR data.
-
-## Warranty
-
-This package is under active development and comes with no warranty.
 
 ## Install
 
@@ -40,4 +36,8 @@ Then you can access the documentation with:
 ```r
 browseVignettes("fluidgr")
 ```
+
+## Warranty
+
+This package is under active development and comes with no warranty.
 

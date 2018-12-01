@@ -39,9 +39,9 @@ library(devtools)
 
 # Data
 
-We provide the object `fluidigm_expr`, that stores normalized gene expression measurement. 
+We provide the `fluidigm_expr` object, that contains normalized gene expression measurement. 
 
-This object is exaclty the same at the one produced in the vignette (Load and Normalize the qPCR Output).
+This object is exactly the same at the one produced in the vignette (Load and Normalize the qPCR Output).
 
 You can load it with:
 
@@ -51,15 +51,17 @@ fluidigm_expr
 
 # Scale
 
-Scaling is not necessary, and you can communicate and visualize directly the normalized expression values; stored in the `expression` column of the `fluidigm_expr` dataset.
+When you want want to explore gene expression, scaling is not always necessary, and often you can use, explore, visualize and communicate directly the normalized expression values; stored in the `expression` column of the `fluidigm_expr` dataset.
 
-Indeed scaling is not necessary, but, together with exploratory plots, scaling can help you detect patterns in your data. You can understand better the outcome of scaling when you visualize tour data in plots. This is why you can learn about the effects of scaling also in the next section "Visualize".
+Indeed scaling is not always necessary, but, together with exploratory plots, scaling can help you detect patterns in your data.
+
+Exploratory plots can help understand the effect that scaling has on expression data. This is why we explain scaling and visualisation of expression data together.
 
 ### Scale with the `scale_fluidigm()` function
 
 Fluidgr provides the `scale_fluidigm()` function, that scales expression values by z-score according to the groups provided in the argument `.group`.
 
-This function takes the dataset output of `normalize()` and returns the same dataset with the extra column `scaled_expression`.
+This function takes as input the output of `normalize()` and returns the same dataset with the extra column `scaled_expression`.
 
 ```{r}
 scaled_dat <- 
