@@ -2,6 +2,7 @@
 
 export(normalize)
 export(read_fluidigm)
+export(scale_ddct)
 export(scale_fluidigm)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)

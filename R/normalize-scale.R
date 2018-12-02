@@ -1,3 +1,5 @@
+utils::globalVariables(".")
+
 #' Estimate Geometric Means
 #'
 #' for normalizers
@@ -22,7 +24,7 @@ gm_mean <-  function(x, na.rm=TRUE){
 #' @param .data A `data.frame` produced by `read_fluidigm()`. The columns required
 #'     are: `sample_name`,`target_name` and `ct_value`.
 #'
-#' @param normalizers A `character` vector with the names of the reference normalizers
+#' @param normalizers  A `character` vector with the names of the reference normalizers
 #'     as they are stored in the `sample_name` column of `data`.
 #'
 #' @export
@@ -64,11 +66,9 @@ normalize <- function(.data, normalizers)
 #'
 #' @param .group A column of `.data` that you want to use to group your
 #'     expression values before scaling.
-#'
-#' @export
 
-scale_fluidigm <- function(.data,
-                           .group)
+scale_sd_fluidigm <- function(.data,
+                              .group)
   {
   .group <- dplyr::enquo(.group)
 
@@ -76,4 +76,81 @@ scale_fluidigm <- function(.data,
     .data %>%
     dplyr::group_by(!!.group) %>%
     dplyr::mutate(scaled_expression = scale(.data$expression))
+}
+
+#' Scale Normalized Fluidigm data
+#'
+#' Scale your fluidigm data in range 0 to 1.
+#' Run this function after `normalize()`.
+#'
+#' @param .data A `data.frame` produced by `read_fluidigm()` and normalized by
+#'     `normalize()`. The columns required
+#'     are: `sample_name`,`target_name` and `expression`.
+#'
+#' @param .group A column of `.data` that you want to use to group your
+#'     expression values before scaling.
+
+
+scale_01_fluidigm <- function(.data, .group)
+{
+  .group <- dplyr::enquo(.group)
+
+  scaled_dat <-
+    .data %>%
+    dplyr::group_by(!!.group) %>%
+    dplyr::mutate(scaled_expression = .data$expression %>%
+             rescale(from = range(.),
+                     to = c(0,1)))
+}
+
+#' Scale Normalized Fluidigm data
+#'
+#' Add these two column to a fluidigm dataset:
+#'
+#' - `scaled_sd` is a column that stores expression values scaled
+#'     by z-scored.
+#' - `scaled_01` is a column that stores expression values scaled
+#'     in range from 0 to 1.
+#'
+#' Run this function after `normalize()`.
+#'
+#' @param .data A `data.frame` produced by `read_fluidigm()` and normalized by
+#'     `normalize()`. The columns required
+#'     are: `sample_name`,`target_name` and `expression`.
+#'
+#' @param .group A column of `.data` that you want to use to group your
+#'     expression values before scaling.
+#'
+#' @export
+
+scale_fluidigm <- function(.data, .group)
+{
+  .data %>%
+    scale_sd_fluidigm(.group = .group) %>%
+    scale_01_fluidigm(.group = .group)
+}
+
+#' Center Expression on One Single Experimental Condition
+#'
+#' Add the `scaled_ddct` columns which stores delta delta Ct
+#' scaled values
+#'
+#' @param .data A `data.frame` produced by `read_fluidigm()` and normalized by
+#'     `normalize()`. The columns required
+#'     are: `sample_name`,`target_name` and `expression`.
+#'
+#' @export
+
+scale_ddct <- function(.data, group_var, group_var2, center_var)
+{
+  # stopifnot("scaled_expression" %in% colnames(scaled_data))
+  group_var <- dplyr::enquo(group_var)
+  group_var2 <- dplyr::enquo(group_var2)
+  scaled_data %>%
+    dplyr::group_by(!!group_var, !!group_var2) %>%
+    dplyr::mutate(center_mean = dplyr::case_when(
+      stage == center_var ~ expression) %>%
+        mean(na.rm = T),
+      centered_exp = expression/center_mean
+      )
 }

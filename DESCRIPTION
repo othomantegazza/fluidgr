@@ -12,7 +12,8 @@ Imports:
     readr (>= 1.1.1),
     dplyr (>= 0.7.7),
     magrittr (>= 1.5),
-    rlang (>= 0.3.0)
+    rlang (>= 0.3.0),
+    scales
 RoxygenNote: 6.1.0
 Suggests: 
     knitr (>= 1.20),
@@ -20,6 +21,5 @@ Suggests:
     devtools (>= 2.0.0),
     stringr (>= 1.3.1),
     ggplot2 (>= 3.0.0),
-    forcats (>= 0.3.0),
-    scales (>= 1.0.0)
+    forcats (>= 0.3.0)
 VignetteBuilder: knitr
