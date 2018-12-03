@@ -1,0 +1,53 @@
+---
+title: "Delta Delta Ct, Center on One Experimental Condition"
+author: "Otho Mantegazza"
+date: "`r Sys.Date()`"
+output:
+  knitr:::html_vignette:
+    toc: yes
+    number_sections: true
+    highlight: default
+vignette: >
+  %\VignetteIndexEntry{Delta Delta Ct, Center on One Experimental Condition}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Here, you will learn how to scale, inspect and visualize the gene expression data by centering the mesurement on one single experimental condition (in what is known as the $2^{ - \Delta \Delta Ct}$ method).
+
+This method is uesful when you want to take one experimental condition as reference. For example, the start time when analyzing time series.
+
+# Setup
+
+```{r packages, message = FALSE}
+library(fluidgr)
+library(magrittr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(forcats)
+library(scales)
+library(devtools)
+```
+
+# Data
+
+We use the `fluidigm_expr` dataset to illustrate how to apply the $2^{ - \Delta \Delta Ct}$ method.
+
+```{r}
+data(fluidigm_expr)
+```
+
+# How to use the function `scale_ddct()`
+
+
