@@ -98,8 +98,8 @@ scale_01_fluidigm <- function(.data, .group)
   scaled_dat <-
     .data %>%
     dplyr::group_by(!!.group) %>%
-    dplyr::mutate(scaled_expression = .data$expression %>%
-             rescale(from = range(.),
+    dplyr::mutate(scaled_01_expression = .data$expression %>%
+             scales::rescale(from = range(.),
                      to = c(0,1)))
 }
 
@@ -125,9 +125,10 @@ scale_01_fluidigm <- function(.data, .group)
 
 scale_fluidigm <- function(.data, .group)
 {
+  .group <- enquo(.group)
   .data %>%
-    scale_sd_fluidigm(.group = .group) %>%
-    scale_01_fluidigm(.group = .group)
+    scale_sd_fluidigm(.group = !!.group) %>%
+    scale_01_fluidigm(.group = !!.group)
 }
 
 #' Center Expression on One Single Experimental Condition
@@ -139,18 +140,36 @@ scale_fluidigm <- function(.data, .group)
 #'     `normalize()`. The columns required
 #'     are: `sample_name`,`target_name` and `expression`.
 #'
+#' @param compare_var the column of the dataset that stores the variable that
+#'     you want to use for centering
+#' @param center_on the value of `compare_var` that you want to set to 1 (i.e.
+#'     the one that you want to center your data on)
+#'
 #' @export
 
-scale_ddct <- function(.data, group_var, group_var2, center_var)
+scale_ddct <- function(.data,
+                       group_var,
+                       group_var2,
+                       compare_var,
+                       center_on)
 {
-  # stopifnot("scaled_expression" %in% colnames(scaled_data))
+  print("a")
+  compare_var <- enquo(compare_var)
+  # compare_var <- ensyms(compare_var)
+  # cv <- paste(purrr::map(compare_var, rlang::as_string), collapse = "")
+  # .data[, cv] %>% as.character() %>% print()
+  stopifnot(center_on %in% (.data %>% pull(!!compare_var)))
+  print("a")
+
   group_var <- dplyr::enquo(group_var)
   group_var2 <- dplyr::enquo(group_var2)
-  scaled_data %>%
+
+  .data %>%
     dplyr::group_by(!!group_var, !!group_var2) %>%
     dplyr::mutate(center_mean = dplyr::case_when(
-      stage == center_var ~ expression) %>%
+      !!compare_var == center_on ~ expression) %>%
         mean(na.rm = T),
-      centered_exp = expression/center_mean
-      )
+      ddct_exp = expression/center_mean
+      ) %>%
+    select(-center_mean)
 }

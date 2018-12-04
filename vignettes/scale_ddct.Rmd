@@ -42,12 +42,19 @@ library(devtools)
 
 # Data
 
-We use the `fluidigm_expr` dataset to illustrate how to apply the $2^{ - \Delta \Delta Ct}$ method.
+We use the `scaled_fluidigm` dataset to illustrate how to apply the $2^{ - \Delta \Delta Ct}$ method.
 
 ```{r}
-data(fluidigm_expr)
+data(scaled_fluidigm)
 ```
 
 # How to use the function `scale_ddct()`
 
+```{r}
+scaled_fluidigm %>% 
+  scale_ddct(group_var = species,
+             group_var2 = target_name,
+             compare_var = stage,
+             center_on = "N1")
+```
 
