@@ -51,10 +51,43 @@ data(scaled_fluidigm)
 # How to use the function `scale_ddct()`
 
 ```{r}
-scaled_fluidigm %>% 
-  scale_ddct(group_var = species,
-             group_var2 = target_name,
-             compare_var = stage,
-             center_on = "N1")
+ddct_flluidigm <- 
+  scaled_fluidigm %>% 
+  scale_ddct(
+    # group_var = species,
+    # group_var2 = target_name,
+    species, target_name,
+    compare_var = stage,
+    center_on = "N1"
+  )
+
+ddct_flluidigm %>% 
+    ggplot(aes(x = stage,
+               y = ddct_exp,
+               group = species,
+               colour = species)) +
+  # plot each expression value into a point
+  # geom_point(size = 2,
+  #              col = "#DA614D",
+  #              alpha = .8) +
+  # it might be complicated to add a line that connect means
+  # across stages,
+  # because stages are encoded as a categorical variable,
+  # we must turn them into numeric
+  stat_summary(aes(x = stage %>%
+                     as.factor(.) %>%
+                     as.numeric(.)),
+               fun.y = mean,
+               geom="line",
+               size = 1.2,
+               alpha = .7,
+               linejoin = "round") +
+  # implement facetting with independent y values
+  # for each genes, since expression values are
+  # not comparable across genes
+  facet_wrap(facet = "target_name",
+             scales = "free",
+             nrow = 1) +
+  theme_bw() 
 ```
 

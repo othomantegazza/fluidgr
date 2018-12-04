@@ -148,8 +148,7 @@ scale_fluidigm <- function(.data, .group)
 #' @export
 
 scale_ddct <- function(.data,
-                       group_var,
-                       group_var2,
+                       ...,
                        compare_var,
                        center_on)
 {
@@ -161,11 +160,18 @@ scale_ddct <- function(.data,
   stopifnot(center_on %in% (.data %>% pull(!!compare_var)))
   print("a")
 
-  group_var <- dplyr::enquo(group_var)
-  group_var2 <- dplyr::enquo(group_var2)
+  # group_var <- dplyr::enquo(group_var)
+  # group_var2 <- dplyr::enquo(group_var2)
+  grouping_vars <- quos(...)
+  # print(grouping_vars)
+  # .data %>% select(!!!grouping_vars) %>% print()
+  # print(purrr::map(grouping_vars, rlang::as_string))
+
+  # print(grouping_vars)
+  # return(grouping_vars)
 
   .data %>%
-    dplyr::group_by(!!group_var, !!group_var2) %>%
+    dplyr::group_by(!!!grouping_vars) %>%
     dplyr::mutate(center_mean = dplyr::case_when(
       !!compare_var == center_on ~ expression) %>%
         mean(na.rm = T),
