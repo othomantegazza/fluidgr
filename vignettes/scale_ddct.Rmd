@@ -22,10 +22,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 Here, you will learn how to scale, inspect and visualize the gene expression data by centering the mesurement on one single experimental condition (in what is known as the $2^{ - \Delta \Delta Ct}$ method).
 
-This method is uesful when you want to take one experimental condition as reference. For example, the start time when analyzing time series.
+This method is useful when you want to take one experimental condition as reference. For example, the start time when analyzing time series.
 
 # Setup
 
@@ -50,26 +49,58 @@ data(scaled_fluidigm)
 
 # How to use the function `scale_ddct()`
 
+Using the $2^{ - \Delta \Delta Ct}$ method on large scale qPCR experiments is often not straightforward, because those experiments are often multivariate.
+
+For example, the `scaled_fluidigm` is measures the expression of four genes (encoded in the column `target_name`) in the combination of two variables:
+
+- 5 different species, encoded in the column `species` .
+- 4 different developmental stages, encoded in the column `stage`.
+
+See below
+
+```{r}
+scaled_fluidigm %>%
+  select(target_name, species, stage) %>%
+  purrr::map(unique)
+```
+
+
+We want to split this dataset by species and gene and compare directly only the measurement in the stage variable. (i.e. we want to scale and compare gene expression in the four stages, for every gene in every species separately)
+
+Moreover, we want a specific stage to be used as reference. The mean in that stage will be set to 1 and expression in every other stage will be expressed in relative terms to that. Let that stage be "N1"
+
+You achieve this using the function `scale_ddct()` (ddct stands for delta delta Ct). `scale_ddct()` takes four arguments
+
+- `.data` a fluidigm dataset
+- `...` the dots must be filled with all the columns of `.data` that you want to use to split it.
+- `compare_var` the column of data used for direct comparison, which must store the value as reference.
+- `center_on` the value used as reference, its mean expression will be set to 1.
+
+
 ```{r}
 ddct_flluidigm <- 
   scaled_fluidigm %>% 
   scale_ddct(
-    # group_var = species,
-    # group_var2 = target_name,
     species, target_name,
     compare_var = stage,
     center_on = "N1"
   )
+```
 
+
+Using this function might be confusing because it uses **dots** `...` to capture any number of column names to split the data. Remember that the arguments after the dots (`compare_var` and `center_on`) must be named.
+
+# Plot 
+
+The output of `ddct_fluidigm()` can be plotted directly with ggplot2.
+
+
+```{r}
 ddct_flluidigm %>% 
     ggplot(aes(x = stage,
                y = ddct_exp,
                group = species,
                colour = species)) +
-  # plot each expression value into a point
-  # geom_point(size = 2,
-  #              col = "#DA614D",
-  #              alpha = .8) +
   # it might be complicated to add a line that connect means
   # across stages,
   # because stages are encoded as a categorical variable,

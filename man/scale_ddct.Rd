@@ -4,20 +4,31 @@
 \alias{scale_ddct}
 \title{Center Expression on One Single Experimental Condition}
 \usage{
-scale_ddct(.data, group_var, group_var2, compare_var, center_on)
+scale_ddct(.data, ..., compare_var, center_on)
 }
 \arguments{
 \item{.data}{A `data.frame` produced by `read_fluidigm()` and normalized by
 `normalize()`. The columns required
 are: `sample_name`,`target_name` and `expression`.}
 
-\item{compare_var}{the column of the dataset that stores the variable that
-you want to use for centering}
+\item{...}{the variables to split `.data` with. Must be a column of `.data`.}
+
+\item{compare_var}{the variable used to compare expression.
+Must be a column of `.data`}
 
 \item{center_on}{the value of `compare_var` that you want to set to 1 (i.e.
 the one that you want to center your data on)}
 }
 \description{
-Add the `scaled_ddct` columns which stores delta delta Ct
-scaled values
+Add a new column to `.data` named `scaled_ddct`.
+This new columns stores delta delta Ct
+scaled expression values.
+}
+\details{
+Since large scale qPCR experiments are often multivariated,
+think clearly which variable you want to use to compare your
+data and which variable you want to use to split them.
+
+The first one goes to the `compare_var` parameter, the others go to the
+tidy dots.
 }
