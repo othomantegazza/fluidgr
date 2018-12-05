@@ -75,7 +75,8 @@ scale_sd_fluidigm <- function(.data,
   scaled_dat <-
     .data %>%
     dplyr::group_by(!!.group) %>%
-    dplyr::mutate(scaled_expression = scale(.data$expression))
+    dplyr::mutate(scaled_expression = scale(.data$expression)) %>%
+    dplyr::ungroup()
 }
 
 #' Scale Normalized Fluidigm data
@@ -100,7 +101,8 @@ scale_01_fluidigm <- function(.data, .group)
     dplyr::group_by(!!.group) %>%
     dplyr::mutate(scaled_01_expression = .data$expression %>%
              scales::rescale(from = range(.),
-                     to = c(0,1)))
+                     to = c(0,1))) %>%
+    dplyr::ungroup()
 }
 
 #' Scale Normalized Fluidigm data

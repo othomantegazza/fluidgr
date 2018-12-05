@@ -80,11 +80,11 @@ You achieve this using the function `scale_ddct()` (ddct stands for delta delta 
 
 ```{r}
 ddct_flluidigm <- 
-  scaled_fluidigm %>% 
+  scaled_fluidigm %>% # the .data parameter is filled by the pipe
   scale_ddct(
-    species, target_name,
-    compare_var = stage,
-    center_on = "N1"
+    species, target_name, # fill the dots ... with the columns that you want to use to split .data
+    compare_var = stage, # direct comparison
+    center_on = "N1" # reference expression, set to 1
   )
 ```
 
@@ -94,7 +94,6 @@ Using this function might be confusing because it uses **dots** `...` to capture
 # Plot 
 
 The output of `ddct_fluidigm()` can be plotted directly with ggplot2.
-
 
 ```{r}
 ddct_flluidigm %>% 
@@ -123,3 +122,4 @@ ddct_flluidigm %>%
   theme_bw() 
 ```
 
+# How $\Delta \Delta Ct$ are estimated in fluidgr 

@@ -43,13 +43,53 @@ We provide the `fluidigm_expr` object, that contains normalized gene expression 
 
 This object is exactly the same at the one produced in the vignette (Load and Normalize the qPCR Output).
 
-You can load it with:
+You can load it by just typing `fluidigm_expr`:
 
 ```{r}
 fluidigm_expr
 ```
 
-# Scale
+# Exploratory Data Analysis: Scale and Visualize
+
+When we explore medium sized gene expression datasets, such as the one produced by qPCR, we often just concentrate on statistical testing and statistical relevance. But in this kind of datasets, you can observe many gene expression patterns and behaviour by [Exploratory Data Analysis](https://r4ds.had.co.nz/exploratory-data-analysis.html), when you iteratively scale and plot your data.
+
+Scaling and plotting are tightly connected, because plots can help you figure out how scaling transforms your expression data; and appropriate scaling can help you detect useful expression patterns in your plots.
+
+## What variables are in your data?
+
+Make the variables in your data explicit.
+
+Often medium sized qPCR gene expression measurememtns are multivatiate. If you want to visualizalize them effectively, make all variables explicit. Also, keep in mind which variable you suspect that determines the response in your dataset and eventually what is the question that you are trying to anwser.
+
+For example in the sample dataset we are measuring the expression of four genes in 4 developmental stages in 5 species. 
+The column `target_name` records the "gene" variable, while the other two variables, developmental stage and species, are hidden in the `sample_name` variable. We can make them explicit. 
+
+The `sample_name` variable is encoded as "J-N1R1":
+
+- The first letter "J" is the species.
+- The letter and the number after the hyphen "N1" encode for the stage.
+- The last letter and number "R1" encode for the replicate.
+
+```{r}
+# make variable explicit
+fluidigm_expr <- 
+  fluidigm_expr %>%
+  # make species explicit
+  mutate(species = str_split_fixed(string = sample_name,
+                                   pattern = "-",
+                                   n = 2)[, 1]) %>%
+  # make stage explicit
+  mutate(stage = str_sub(string = sample_name,
+                         start = 3,
+                         end = 4)) %>%
+  # make replicate explicit
+  mutate(replicate = str_sub(string = sample_name,
+                         start = 5,
+                         end = 6))
+```
+
+
+## Scale your data
 
 When you want want to explore gene expression, scaling is not always necessary, and often you can use, explore, visualize and communicate directly the normalized expression values; stored in the `expression` column of the `fluidigm_expr` dataset.
 
@@ -59,16 +99,23 @@ Exploratory plots can help understand the effect that scaling has on expression 
 
 ### Scale with the `scale_fluidigm()` function
 
-Fluidgr provides the `scale_fluidigm()` function, that scales expression values by z-score according to the groups provided in the argument `.group`.
+Fluidgr provides the `scale_fluidigm()` function, that scales expression values:
 
-This function takes as input the output of `normalize()` and returns the same dataset with the extra column `scaled_expression`.
+- by z-score in one column (`scaled_expression`),
+- in range 0 to 1 in another(`scaled_01_expression`),
+
+according to the groups provided in the argument `.group`.
+
+This function takes as input the output of `normalize()` and returns the same dataset with the two extra column `scaled_expression`.
 
 ```{r}
 scaled_dat <- 
   fluidigm_expr %>% 
   scale_fluidigm(.group = target_name)
-```
 
+# inspect the output
+scaled_dat %>% select(scaled_expression, scaled_01_expression) %>% summary()
+```
 
 ### Write your own scaling function
 
@@ -87,38 +134,6 @@ This should provide to you a good basis and enough freedom to explore and visual
 Fluidigmr does not provide plotting function, because all the functions that you need to plot this kind of data are already available in [ggplot2](https://ggplot2.tidyverse.org/). Indeed the dataset output of is already in a [tidy/gathered format](http://r4ds.had.co.nz/tidy-data.html).
 
 Here we provide some ideas of how you can explore, plot and visualize your Fluidigm data.
-
-## What variables are in your data?
-
-Make the variables in your data explicit.
-
-Effective visualization depends from the variable that determine the effect in your dataset and eventually by the question that you are trying to anwser.
-
-For example in the sample dataset we are measuring the expression of four genes in 4 developmental stages in 5 species. 
-The column `target_name` records the "gene" variable, while the other two variables, developmental stage and species, are hidden in the `sample_name` variable. We can make them explicit. 
-
-The `sample_name` variable is encoded as "J-N1R1":
-
-- The first letter "J" is the species.
-- The letter and the number after the hyphen "N1" encode for the stage.
-- The last letter and number "R1" encode for the replicate.
-
-```{r}
-fluidigm_expr <- 
-  fluidigm_expr %>%
-  # make species explicit
-  mutate(species = str_split_fixed(string = sample_name,
-                                   pattern = "-",
-                                   n = 2)[, 1]) %>%
-  # make stage explicit
-  mutate(stage = str_sub(string = sample_name,
-                         start = 3,
-                         end = 4)) %>%
-  # make replicate explicit
-  mutate(replicate = str_sub(string = sample_name,
-                         start = 5,
-                         end = 6))
-```
 
 ## Lineplot
 
@@ -180,6 +195,8 @@ p_heat <-
 p_heat %>% print()
 ```
 
+## Heatmaps
+
 Sometime heatmap don't convey muich invormation if you don't scale your data.
 
 For example we can scale every gene on z-score to make them comparable.
@@ -234,60 +251,5 @@ p_heat <-
   scale_fill_viridis_c()
 
 p_heat %>% print()
-```
-
-# Scale and center on a specific group - Timecourses
-
-Sometime it might be useful to center the expression data on a specific timepoint or condition, in a manner similar to the $2^{ - \Delta \Delta Ct}$ method
-
-This can be achieved with the function `center_stage()`:
-
-```{r}
-center_stage <- function(scaled_data, group_var, group_var2, center_var)
-  { 
-  stopifnot("scaled_expression" %in% colnames(scaled_data))
-  group_var <- enquo(group_var)
-  group_var2 <- enquo(group_var2)
-    scaled_data %>% 
-      group_by(!!group_var, !!group_var2) %>% 
-      mutate(center_mean = case_when(stage == center_var ~ scaled_expression) %>%
-               mean(na.rm = T),
-             centered_exp = scaled_expression/center_mean) 
-}
-
-centered_dat <- 
-  scaled_dat %>% 
-  center_stage(group_var = species,
-               group_var2 = target_name,
-               center_var = "N1")
-
-centered_dat %>% 
-  ggplot(aes(x = stage,
-             y = centered_exp,
-             group = species,
-             colour = species)) +
-  # plot each expression value into a point
-  # geom_point(size = 2,
-  #              col = "#DA614D",
-  #              alpha = .8) +
-  # it might be complicated to add a line that connect means
-  # across stages,
-  # because stages are encoded as a categorical variable,
-  # we must turn them into numeric
-  stat_summary(aes(x = stage %>%
-                     as.factor(.) %>%
-                     as.numeric(.)),
-               fun.y = mean,
-               geom="line",
-               size = 1.2,
-               alpha = .7,
-               linejoin = "round") +
-  # implement facetting with independent y values
-  # for each genes, since expression values are
-  # not comparable across genes
-  facet_wrap(facet = "target_name",
-             scales = "free",
-             nrow = 1) +
-  theme_bw() 
 ```
 
