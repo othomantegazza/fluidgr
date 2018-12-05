@@ -4,4 +4,5 @@ pkgdown_sha: ~
 articles:
   load-normalize: load-normalize.html
   scale-plot: scale-plot.html
+  scale_ddct: scale_ddct.html
 

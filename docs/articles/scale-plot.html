@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluidgr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.1.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1</span>
       </span>
     </div>
 
@@ -57,6 +57,9 @@
     <li>
       <a href="../articles/scale-plot.html">Scale and Visualize qPCR results</a>
     </li>
+    <li>
+      <a href="../articles/scale_ddct.html">Delta Delta Ct, Center on One Experimental Condition</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -78,7 +81,7 @@
       <h1>Scale and Visualize qPCR results</h1>
                         <h4 class="author">Otho Mantegazza</h4>
             
-            <h4 class="date">2018-11-30</h4>
+            <h4 class="date">2018-12-05</h4>
       
       
       <div class="hidden name"><code>scale-plot.Rmd</code></div>
@@ -103,8 +106,8 @@
 <div id="data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h1>
-<p>We provide the object <code>fluidigm_expr</code>, that stores normalized gene expression measurement.</p>
-<p>This object is exaclty the same at the one produced in the vignette (Load and Normalize the qPCR Output).</p>
+<p>We provide the <code>fluidigm_expr</code> object, that contains normalized gene expression measurement.</p>
+<p>This object is exactly the same at the one produced in the vignette (Load and Normalize the qPCR Output).</p>
 <p>You can load it with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fluidigm_expr
 <span class="co">#&gt; # A tibble: 240 x 7</span>
@@ -125,13 +128,14 @@
 <div id="scale" class="section level1">
 <h1 class="hasAnchor">
 <a href="#scale" class="anchor"></a>Scale</h1>
-<p>Scaling is not necessary, and you can communicate and visualize directly the normalized expression values; stored in the <code>expression</code> column of the <code>fluidigm_expr</code> dataset.</p>
-<p>Indeed scaling is not necessary, but, together with exploratory plots, scaling can help you detect patterns in your data. You can understand better the outcome of scaling when you visualize tour data in plots. This is why you can learn about the effects of scaling also in the next section “Visualize”.</p>
+<p>When you want want to explore gene expression, scaling is not always necessary, and often you can use, explore, visualize and communicate directly the normalized expression values; stored in the <code>expression</code> column of the <code>fluidigm_expr</code> dataset.</p>
+<p>Indeed scaling is not always necessary, but, together with exploratory plots, scaling can help you detect patterns in your data.</p>
+<p>Exploratory plots can help understand the effect that scaling has on expression data. This is why we explain scaling and visualisation of expression data together.</p>
 <div id="scale-with-the-scale_fluidigm-function" class="section level3">
 <h3 class="hasAnchor">
 <a href="#scale-with-the-scale_fluidigm-function" class="anchor"></a>Scale with the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function</h3>
 <p>Fluidgr provides the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function, that scales expression values by z-score according to the groups provided in the argument <code>.group</code>.</p>
-<p>This function takes the dataset output of <code><a href="../reference/normalize.html">normalize()</a></code> and returns the same dataset with the extra column <code>scaled_expression</code>.</p>
+<p>This function takes as input the output of <code><a href="../reference/normalize.html">normalize()</a></code> and returns the same dataset with the extra column <code>scaled_expression</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaled_dat &lt;-<span class="st"> </span>
 <span class="st">  </span>fluidigm_expr <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw"><a href="../reference/scale_fluidigm.html">scale_fluidigm</a></span>(<span class="dt">.group =</span> target_name)</code></pre></div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • fluidgr</title>
+<title>Center Expression on One Single Experimental Condition — scale_ddct • fluidgr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,12 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Center Expression on One Single Experimental Condition — scale_ddct" />
+
+<meta property="og:description" content="Add a new column to `.data` named `scaled_ddct`.
+This new columns stores delta delta Ct
+scaled expression values." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -46,7 +51,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -108,78 +113,66 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Center Expression on One Single Experimental Condition</h1>
+    
+    <div class="hidden name"><code>scale_ddct.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Add a new column to `.data` named `scaled_ddct`.
+This new columns stores delta delta Ct
+scaled expression values.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="gm_mean.html">gm_mean()</a></code> </p>
-        </td>
-        <td><p>Estimate Geometric Means</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="normalize.html">normalize()</a></code> </p>
-        </td>
-        <td><p>Normalize Ct Values</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_fluidigm.html">read_fluidigm()</a></code> </p>
-        </td>
-        <td><p>Parse the CSV Output of Fluidigm</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_01_fluidigm.html">scale_01_fluidigm()</a></code> </p>
-        </td>
-        <td><p>Scale Normalized Fluidigm data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_ddct.html">scale_ddct()</a></code> </p>
-        </td>
-        <td><p>Center Expression on One Single Experimental Condition</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_fluidigm.html">scale_fluidigm()</a></code> </p>
-        </td>
-        <td><p>Scale Normalized Fluidigm data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_sd_fluidigm.html">scale_sd_fluidigm()</a></code> </p>
-        </td>
-        <td><p>Scale Normalized Fluidigm data</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>scale_ddct</span>(<span class='no'>.data</span>, <span class='no'>...</span>, <span class='no'>compare_var</span>, <span class='no'>center_on</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>.data</th>
+      <td><p>A `data.frame` produced by `read_fluidigm()` and normalized by
+`normalize()`. The columns required
+are: `sample_name`,`target_name` and `expression`.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>the variables to split `.data` with. Must be a column of `.data`.</p></td>
+    </tr>
+    <tr>
+      <th>compare_var</th>
+      <td><p>the variable used to compare expression.
+Must be a column of `.data`</p></td>
+    </tr>
+    <tr>
+      <th>center_on</th>
+      <td><p>the value of `compare_var` that you want to set to 1 (i.e.
+the one that you want to center your data on)</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Since large scale qPCR experiments are often multivariated,
+think clearly which variable you want to use to compare your
+data and which variable you want to use to split them.</p>
+<p>The first one goes to the `compare_var` parameter, the others go to the
+tidy dots.</p>
+    
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
+
   </div>
 </div>
 
