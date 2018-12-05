@@ -1,7 +1,7 @@
 Package: fluidgr
 Type: Package
 Title: Analize Fluidigm qPCR Data
-Version: 0.0.1.9000
+Version: 0.1
 Authors@R: person("Otho", "Mantegazza", email = "otho.mantegazza@gmail.com",
 				          role = c("aut", "cre"))
 Description: Parse, normalize, scale and plot data from Fluidigm qPCR.
