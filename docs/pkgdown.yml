@@ -3,6 +3,6 @@ pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:
   load-normalize: load-normalize.html
+  scale-ddct: scale-ddct.html
   scale-plot: scale-plot.html
-  scale_ddct: scale_ddct.html
 

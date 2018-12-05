@@ -55,10 +55,10 @@
       <a href="../articles/load-normalize.html">Load and Normalize the qPCR Output</a>
     </li>
     <li>
-      <a href="../articles/scale-plot.html">Scale and Visualize qPCR results</a>
+      <a href="../articles/scale-ddct.html">Delta Delta Ct, Center on One Experimental Condition</a>
     </li>
     <li>
-      <a href="../articles/scale_ddct.html">Delta Delta Ct, Center on One Experimental Condition</a>
+      <a href="../articles/scale-plot.html">Scale and Visualize qPCR results</a>
     </li>
   </ul>
 </li>
@@ -108,7 +108,7 @@
 <a href="#data" class="anchor"></a>Data</h1>
 <p>We provide the <code>fluidigm_expr</code> object, that contains normalized gene expression measurement.</p>
 <p>This object is exactly the same at the one produced in the vignette (Load and Normalize the qPCR Output).</p>
-<p>You can load it with:</p>
+<p>You can load it by just typing <code>fluidigm_expr</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fluidigm_expr
 <span class="co">#&gt; # A tibble: 240 x 7</span>
 <span class="co">#&gt;    sample_name sample_type target_name target_type ct_value norm_geom_mean</span>
@@ -125,41 +125,16 @@
 <span class="co">#&gt; 10 J-N2R1      Unknown     gene4       Test           16.4            5.76</span>
 <span class="co">#&gt; # ... with 230 more rows, and 1 more variable: expression &lt;dbl&gt;</span></code></pre></div>
 </div>
-<div id="scale" class="section level1">
+<div id="exploratory-data-analysis-scale-and-visualize" class="section level1">
 <h1 class="hasAnchor">
-<a href="#scale" class="anchor"></a>Scale</h1>
-<p>When you want want to explore gene expression, scaling is not always necessary, and often you can use, explore, visualize and communicate directly the normalized expression values; stored in the <code>expression</code> column of the <code>fluidigm_expr</code> dataset.</p>
-<p>Indeed scaling is not always necessary, but, together with exploratory plots, scaling can help you detect patterns in your data.</p>
-<p>Exploratory plots can help understand the effect that scaling has on expression data. This is why we explain scaling and visualisation of expression data together.</p>
-<div id="scale-with-the-scale_fluidigm-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#scale-with-the-scale_fluidigm-function" class="anchor"></a>Scale with the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function</h3>
-<p>Fluidgr provides the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function, that scales expression values by z-score according to the groups provided in the argument <code>.group</code>.</p>
-<p>This function takes as input the output of <code><a href="../reference/normalize.html">normalize()</a></code> and returns the same dataset with the extra column <code>scaled_expression</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaled_dat &lt;-<span class="st"> </span>
-<span class="st">  </span>fluidigm_expr <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="../reference/scale_fluidigm.html">scale_fluidigm</a></span>(<span class="dt">.group =</span> target_name)</code></pre></div>
-</div>
-<div id="write-your-own-scaling-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#write-your-own-scaling-function" class="anchor"></a>Write your own scaling function</h3>
-<p>You can write your own scaling function, becaus <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function is just a soft wrapper around dplyr’s <code><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> and <code><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>. If you want to try different scaling methods, you can replicate and tweak the output of <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fluidigm_expr <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(target_name) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">scaled_expression =</span> <span class="kw">scale</span>(expression))</code></pre></div>
-<p>This should provide to you a good basis and enough freedom to explore and visualize your data as you prefer.</p>
-</div>
-</div>
-<div id="visualize" class="section level1">
-<h1 class="hasAnchor">
-<a href="#visualize" class="anchor"></a>Visualize</h1>
-<p>Fluidigmr does not provide plotting function, because all the functions that you need to plot this kind of data are already available in <a href="https://ggplot2.tidyverse.org/">ggplot2</a>. Indeed the dataset output of is already in a <a href="http://r4ds.had.co.nz/tidy-data.html">tidy/gathered format</a>.</p>
-<p>Here we provide some ideas of how you can explore, plot and visualize your Fluidigm data.</p>
+<a href="#exploratory-data-analysis-scale-and-visualize" class="anchor"></a>Exploratory Data Analysis: Scale and Visualize</h1>
+<p>When we explore medium sized gene expression datasets, such as the one produced by qPCR, we often just concentrate on statistical testing and statistical relevance. But in this kind of datasets, you can observe many gene expression patterns and behaviour by <a href="https://r4ds.had.co.nz/exploratory-data-analysis.html">Exploratory Data Analysis</a>, when you iteratively scale and plot your data.</p>
+<p>Scaling and plotting are tightly connected, because plots can help you figure out how scaling transforms your expression data; and appropriate scaling can help you detect useful expression patterns in your plots.</p>
 <div id="what-variables-are-in-your-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#what-variables-are-in-your-data" class="anchor"></a>What variables are in your data?</h2>
 <p>Make the variables in your data explicit.</p>
-<p>Effective visualization depends from the variable that determine the effect in your dataset and eventually by the question that you are trying to anwser.</p>
+<p>Often medium sized qPCR gene expression measurememtns are multivatiate. If you want to visualizalize them effectively, make all variables explicit. Also, keep in mind which variable you suspect that determines the response in your dataset and eventually what is the question that you are trying to anwser.</p>
 <p>For example in the sample dataset we are measuring the expression of four genes in 4 developmental stages in 5 species. The column <code>target_name</code> records the “gene” variable, while the other two variables, developmental stage and species, are hidden in the <code>sample_name</code> variable. We can make them explicit.</p>
 <p>The <code>sample_name</code> variable is encoded as “J-N1R1”:</p>
 <ul>
@@ -167,7 +142,8 @@
 <li>The letter and the number after the hyphen “N1” encode for the stage.</li>
 <li>The last letter and number “R1” encode for the replicate.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fluidigm_expr &lt;-<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># make variable explicit</span>
+fluidigm_expr &lt;-<span class="st"> </span>
 <span class="st">  </span>fluidigm_expr <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="co"># make species explicit</span>
 <span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">species =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/stringr/topics/str_split">str_split_fixed</a></span>(<span class="dt">string =</span> sample_name,
@@ -182,6 +158,53 @@
                          <span class="dt">start =</span> <span class="dv">5</span>,
                          <span class="dt">end =</span> <span class="dv">6</span>))</code></pre></div>
 </div>
+<div id="scale-your-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#scale-your-data" class="anchor"></a>Scale your data</h2>
+<p>When you want want to explore gene expression, scaling is not always necessary, and often you can use, explore, visualize and communicate directly the normalized expression values; stored in the <code>expression</code> column of the <code>fluidigm_expr</code> dataset.</p>
+<p>Indeed scaling is not always necessary, but, together with exploratory plots, scaling can help you detect patterns in your data.</p>
+<p>Exploratory plots can help understand the effect that scaling has on expression data. This is why we explain scaling and visualisation of expression data together.</p>
+<div id="scale-with-the-scale_fluidigm-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#scale-with-the-scale_fluidigm-function" class="anchor"></a>Scale with the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function</h3>
+<p>Fluidgr provides the <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function, that scales expression values:</p>
+<ul>
+<li>by z-score in one column (<code>scaled_expression</code>),</li>
+<li>in range 0 to 1 in another(<code>scaled_01_expression</code>),</li>
+</ul>
+<p>according to the groups provided in the argument <code>.group</code>.</p>
+<p>This function takes as input the output of <code><a href="../reference/normalize.html">normalize()</a></code> and returns the same dataset with the two extra column <code>scaled_expression</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaled_dat &lt;-<span class="st"> </span>
+<span class="st">  </span>fluidigm_expr <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="../reference/scale_fluidigm.html">scale_fluidigm</a></span>(<span class="dt">.group =</span> target_name)
+
+<span class="co"># inspect the output</span>
+scaled_dat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(scaled_expression, scaled_01_expression) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summary</span>()
+<span class="co">#&gt; Adding missing grouping variables: `target_name`</span>
+<span class="co">#&gt;  target_name        scaled_expression scaled_01_expression</span>
+<span class="co">#&gt;  Length:240         Min.   :-2.0959   Min.   :0.000000    </span>
+<span class="co">#&gt;  Class :character   1st Qu.:-0.5954   1st Qu.:0.006373    </span>
+<span class="co">#&gt;  Mode  :character   Median :-0.4200   Median :0.175943    </span>
+<span class="co">#&gt;                     Mean   : 0.0000   Mean   :0.232264    </span>
+<span class="co">#&gt;                     3rd Qu.: 0.3937   3rd Qu.:0.389738    </span>
+<span class="co">#&gt;                     Max.   : 4.6191   Max.   :1.000000</span></code></pre></div>
+</div>
+<div id="write-your-own-scaling-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#write-your-own-scaling-function" class="anchor"></a>Write your own scaling function</h3>
+<p>You can write your own scaling function, becaus <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> function is just a soft wrapper around dplyr’s <code><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> and <code><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>. If you want to try different scaling methods, you can replicate and tweak the output of <code><a href="../reference/scale_fluidigm.html">scale_fluidigm()</a></code> with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fluidigm_expr <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(target_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">scaled_expression =</span> <span class="kw">scale</span>(expression))</code></pre></div>
+<p>This should provide to you a good basis and enough freedom to explore and visualize your data as you prefer.</p>
+</div>
+</div>
+</div>
+<div id="visualize" class="section level1">
+<h1 class="hasAnchor">
+<a href="#visualize" class="anchor"></a>Visualize</h1>
+<p>Fluidigmr does not provide plotting function, because all the functions that you need to plot this kind of data are already available in <a href="https://ggplot2.tidyverse.org/">ggplot2</a>. Indeed the dataset output of is already in a <a href="http://r4ds.had.co.nz/tidy-data.html">tidy/gathered format</a>.</p>
+<p>Here we provide some ideas of how you can explore, plot and visualize your Fluidigm data.</p>
 <div id="lineplot" class="section level2">
 <h2 class="hasAnchor">
 <a href="#lineplot" class="anchor"></a>Lineplot</h2>
@@ -233,6 +256,10 @@ p_log <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pr
 
 p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">print</span>()</code></pre></div>
 <p><img src="scale-plot_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+</div>
+<div id="heatmaps" class="section level2">
+<h2 class="hasAnchor">
+<a href="#heatmaps" class="anchor"></a>Heatmaps</h2>
 <p>Sometime heatmap don’t convey muich invormation if you don’t scale your data.</p>
 <p>For example we can scale every gene on z-score to make them comparable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">scaled_gene &lt;-<span class="st"> </span>
@@ -274,59 +301,6 @@ p_heat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">p
 <p><img src="scale-plot_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
 </div>
-<div id="scale-and-center-on-a-specific-group---timecourses" class="section level1">
-<h1 class="hasAnchor">
-<a href="#scale-and-center-on-a-specific-group---timecourses" class="anchor"></a>Scale and center on a specific group - Timecourses</h1>
-<p>Sometime it might be useful to center the expression data on a specific timepoint or condition, in a manner similar to the <span class="math inline">\(2^{ - \Delta \Delta Ct}\)</span> method</p>
-<p>This can be achieved with the function <code>center_stage()</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">center_stage &lt;-<span class="st"> </span><span class="cf">function</span>(scaled_data, group_var, group_var2, center_var)
-  { 
-  <span class="kw">stopifnot</span>(<span class="st">"scaled_expression"</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">colnames</span>(scaled_data))
-  group_var &lt;-<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/tidyeval.html">enquo</a></span>(group_var)
-  group_var2 &lt;-<span class="st"> </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/tidyeval.html">enquo</a></span>(group_var2)
-    scaled_data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">      </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="op">!!</span>group_var, <span class="op">!!</span>group_var2) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">      </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">center_mean =</span> <span class="kw"><a href="http://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span>(stage <span class="op">==</span><span class="st"> </span>center_var <span class="op">~</span><span class="st"> </span>scaled_expression) <span class="op">%&gt;%</span>
-<span class="st">               </span><span class="kw">mean</span>(<span class="dt">na.rm =</span> T),
-             <span class="dt">centered_exp =</span> scaled_expression<span class="op">/</span>center_mean) 
-}
-
-centered_dat &lt;-<span class="st"> </span>
-<span class="st">  </span>scaled_dat <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">center_stage</span>(<span class="dt">group_var =</span> species,
-               <span class="dt">group_var2 =</span> target_name,
-               <span class="dt">center_var =</span> <span class="st">"N1"</span>)
-
-centered_dat <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> stage,
-             <span class="dt">y =</span> centered_exp,
-             <span class="dt">group =</span> species,
-             <span class="dt">colour =</span> species)) <span class="op">+</span>
-<span class="st">  </span><span class="co"># plot each expression value into a point</span>
-<span class="st">  </span><span class="co"># geom_point(size = 2,</span>
-<span class="st">  </span><span class="co">#              col = "#DA614D",</span>
-<span class="st">  </span><span class="co">#              alpha = .8) +</span>
-<span class="st">  </span><span class="co"># it might be complicated to add a line that connect means</span>
-<span class="st">  </span><span class="co"># across stages,</span>
-<span class="st">  </span><span class="co"># because stages are encoded as a categorical variable,</span>
-<span class="st">  </span><span class="co"># we must turn them into numeric</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/stat_summary.html">stat_summary</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> stage <span class="op">%&gt;%</span>
-<span class="st">                     </span><span class="kw">as.factor</span>(.) <span class="op">%&gt;%</span>
-<span class="st">                     </span><span class="kw">as.numeric</span>(.)),
-               <span class="dt">fun.y =</span> mean,
-               <span class="dt">geom=</span><span class="st">"line"</span>,
-               <span class="dt">size =</span> <span class="fl">1.2</span>,
-               <span class="dt">alpha =</span> .<span class="dv">7</span>,
-               <span class="dt">linejoin =</span> <span class="st">"round"</span>) <span class="op">+</span>
-<span class="st">  </span><span class="co"># implement facetting with independent y values</span>
-<span class="st">  </span><span class="co"># for each genes, since expression values are</span>
-<span class="st">  </span><span class="co"># not comparable across genes</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="dt">facet =</span> <span class="st">"target_name"</span>,
-             <span class="dt">scales =</span> <span class="st">"free"</span>,
-             <span class="dt">nrow =</span> <span class="dv">1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() </code></pre></div>
-<p><img src="scale-plot_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -336,14 +310,18 @@ centered_dat <span class="op">%&gt;%</span><span class="st"> </span>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#setup">Setup</a></li>
       <li><a href="#data">Data</a></li>
-      <li><a href="#scale">Scale</a></li>
       <li>
-<a href="#visualize">Visualize</a><ul class="nav nav-pills nav-stacked">
+<a href="#exploratory-data-analysis-scale-and-visualize">Exploratory Data Analysis: Scale and Visualize</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#what-variables-are-in-your-data">What variables are in your data?</a></li>
-      <li><a href="#lineplot">Lineplot</a></li>
+      <li><a href="#scale-your-data">Scale your data</a></li>
       </ul>
 </li>
-      <li><a href="#scale-and-center-on-a-specific-group---timecourses">Scale and center on a specific group - Timecourses</a></li>
+      <li>
+<a href="#visualize">Visualize</a><ul class="nav nav-pills nav-stacked">
+<li><a href="#lineplot">Lineplot</a></li>
+      <li><a href="#heatmaps">Heatmaps</a></li>
+      </ul>
+</li>
       </ul>
 </div>
       </div>
