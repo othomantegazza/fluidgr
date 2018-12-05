@@ -37,6 +37,7 @@ library(ggplot2)
 library(forcats)
 library(scales)
 library(devtools)
+library(purrr)
 ```
 
 # Data
@@ -61,7 +62,7 @@ See below
 ```{r}
 scaled_fluidigm %>%
   select(target_name, species, stage) %>%
-  purrr::map(unique)
+  map(unique)
 ```
 
 

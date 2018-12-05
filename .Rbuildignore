@@ -4,4 +4,5 @@
 ^doc$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^data-raw/*$
 

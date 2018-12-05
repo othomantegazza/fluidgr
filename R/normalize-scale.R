@@ -125,7 +125,7 @@ scale_01_fluidigm <- function(.data, .group)
 
 scale_fluidigm <- function(.data, .group)
 {
-  .group <- enquo(.group)
+  .group <- dplyr::enquo(.group)
   .data %>%
     scale_sd_fluidigm(.group = !!.group) %>%
     scale_01_fluidigm(.group = !!.group)
@@ -160,19 +160,19 @@ scale_ddct <- function(.data,
                        compare_var,
                        center_on)
 {
-  compare_var <- enquo(compare_var)
-  stopifnot(center_on %in% (.data %>% pull(!!compare_var)))
+  compare_var <- dplyr::enquo(compare_var)
+  stopifnot(center_on %in% (.data %>% dplyr::pull(!!compare_var)))
 
   # quasiquotation of multiple variables with quos?
-  grouping_vars <- quos(...)
+  grouping_vars <- ggplot2::quos(...)
 
   # and then splice them with !!!
   .data %>%
     dplyr::group_by(!!!grouping_vars) %>%
     dplyr::mutate(center_mean = dplyr::case_when(
-      !!compare_var == center_on ~ expression) %>%
+      !!compare_var == center_on ~ .data$expression) %>%
         mean(na.rm = T),
-      ddct_exp = expression/center_mean
+      ddct_exp = .data$expression/.data$center_mean
       ) %>%
-    select(-center_mean)
+    dplyr::select(-.data$center_mean)
 }
