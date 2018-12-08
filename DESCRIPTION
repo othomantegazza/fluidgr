@@ -6,6 +6,7 @@ Authors@R: person("Otho", "Mantegazza", email = "otho.mantegazza@gmail.com",
 				          role = c("aut", "cre"))
 Description: Parse, normalize, scale and plot data from Fluidigm qPCR.
 License: GPL-3 | file LICENSE
+URL: https://othomantegazza.github.io/fluidgr/index.html, https://github.com/othomantegazza/fluidgr
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.4.4)
