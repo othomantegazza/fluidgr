@@ -165,8 +165,8 @@ scale_ddct <- function(.data,
   compare_var <- dplyr::enquo(compare_var)
   stopifnot(center_on %in% (.data %>% dplyr::pull(!!compare_var)))
 
-  # quasiquotation of multiple variables with quos?
-  grouping_vars <- ggplot2::quos(...)
+  # quasiquotation of multiple variables with enquos?
+  grouping_vars <- rlang::enquos(...)
 
   # and then splice them with !!!
   .data %>%
